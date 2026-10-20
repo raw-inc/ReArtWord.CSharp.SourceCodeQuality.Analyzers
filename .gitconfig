@@ -1,0 +1,179 @@
+# ===== Core Git Settings =====
+[core]
+    # 改行コードの自動変換を無効化（チーム内で統一管理）
+    autocrlf = false
+    
+    # ファイルモードの変更を無視（Windows/Linux間での問題回避）
+    filemode = false
+    
+    # 大文字小文字を区別する
+    ignorecase = false
+    
+    # シンボリックリンクを有効化
+    symlinks = true
+    
+    # エディタ設定（各開発者が個別に設定可能）
+    # editor = code --wait
+    
+    # 改行コードの警告
+    whitespace = trailing-space,space-before-tab,tab-in-indent
+    
+    # パフォーマンス向上のための設定
+    preloadindex = true
+    fscache = true
+
+# ===== 差分表示設定 =====
+[diff]
+    # 差分アルゴリズムの最適化
+    algorithm = histogram
+    
+    # 名前変更の検出を有効化
+    renames = true
+    
+    # C#用の差分表示改善
+    csharp = "class|struct|interface|enum|namespace|method|property|field|event"
+
+# ===== マージ設定 =====
+[merge]
+    # マージ時のコンフリクトマーカーのスタイル
+    conflictstyle = diff3
+    
+    # ファイル名変更の追跡
+    renamelimit = 3000
+    
+    # Fast-forwardマージを無効化（履歴を保持）
+    ff = false
+
+# ===== プル設定 =====
+[pull]
+    # プル時はマージを使用（歴史改変を避ける）
+    rebase = false
+    
+    # Fast-forwardマージを無効化
+    ff = false
+
+# ===== プッシュ設定 =====
+[push]
+    # カレントブランチのみプッシュ
+    default = current
+    
+    # プッシュ時にタグも送信
+    followTags = true
+
+# ===== フェッチ設定 =====
+[fetch]
+    # リモートで削除されたブランチをローカルから自動削除しない
+    prune = false
+    
+    # フェッチ時にタグも取得
+    tags = true
+
+# ===== ステータス設定 =====
+[status]
+    # 短縮形式で表示
+    short = true
+    
+    # ブランチ情報も表示
+    branch = true
+
+# ===== ログ設定 =====
+[log]
+    # 日付フォーマット
+    date = iso-local
+    
+    # デコレーション表示
+    decorate = true
+
+# ===== エイリアス設定 =====
+[alias]
+    # 基本的なエイリアス
+    st = status
+    co = checkout
+    br = branch
+    ci = commit
+    
+    # ログ表示用エイリアス
+    lg = log --oneline --graph --decorate --all
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d %Creset%s%Cblue [%cn]" --decorate --numstat
+    
+    # 作業効率化エイリアス
+    unstage = reset HEAD --
+    last = log -1 HEAD
+    visual = !gitk
+
+# ===== カラー設定 =====
+[color]
+    # カラー表示を有効化
+    ui = auto
+    
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[color "status"]
+    added = green
+    changed = yellow
+    untracked = red
+
+# ===== 改行コード設定 =====
+[filter "lfs"]
+    # Git LFS設定（大容量ファイル管理）
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+
+# ===== セキュリティ設定 =====
+[credential]
+    # 認証情報のキャッシュ時間（秒）
+    helper = cache --timeout=3600
+
+# ===== Unity特有の設定 =====
+[diff "unity"]
+    textconv = "cat"
+    binary = true
+
+# ===== 各種ツール連携 =====
+[difftool]
+    prompt = false
+
+[mergetool]
+    prompt = false
+    keepBackup = false
+
+# ===== パフォーマンス設定 =====
+[pack]
+    threads = 0
+    windowMemory = 256m
+
+[gc]
+    auto = 256
+
+# ===== 安全性設定 =====
+[init]
+    defaultBranch = main
+
+[safe]
+    directory = *
+
+# ===== プロトコル設定 =====
+[protocol]
+    version = 2
+
+# ===== 履歴保護設定 =====
+[receive]
+    denyNonFastForwards = true
+    denyDeletes = true
+
+[branch]
+    # ブランチ作成時の追跡設定
+    autosetupmerge = always
+    autosetuprebase = never

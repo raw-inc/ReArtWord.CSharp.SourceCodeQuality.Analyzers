@@ -1,0 +1,15 @@
+ReArtWord.CSharp.SourceCodeQuality.Analyzers
+
+Copyright (C) 2026 raw inc. and Tomonari Hayashi
+
+本ソフトウェアは LGPL-3.0-or-later の条件に基づいて提供します。
+ライセンス本文と関連する表記は、次のファイルに記載しています。
+
+- LICENSE: GNU Lesser General Public License version 3
+- licenses/GPL-3.0.txt: GNU General Public License version 3
+- THIRD_PARTY_NOTICES.md: 依存ライブラリの著作者、ライセンス、NOTICE
+
+依存ライブラリには、それぞれのライセンス条件が適用されます。
+
+ソースコード:
+https://github.com/raw-inc/ReArtWord.CSharp.SourceCodeQuality.Analyzers

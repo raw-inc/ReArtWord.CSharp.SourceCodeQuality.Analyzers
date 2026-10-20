@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers/ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.csproj" />
+    <Project Path="src/ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers/ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.csproj" />
+    <Project Path="src/ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers/ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests/ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests.csproj" />
+    <Project Path="tests/ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests/ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests.csproj" />
+    <Project Path="tests/ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.Tests/ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.Tests.csproj" />
+  </Folder>
+</Solution>

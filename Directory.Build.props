@@ -1,0 +1,93 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <RAW101MaxClassLineCount>350</RAW101MaxClassLineCount>
+    <RAW130MaxPartialClassDeclarationCount>4</RAW130MaxPartialClassDeclarationCount>
+    <RAW455TernaryConditionCountThreshold>5</RAW455TernaryConditionCountThreshold>
+    <RAW301AllowedNoWarnIds>CS1591;CA1707</RAW301AllowedNoWarnIds>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Product>ReArtWord.CSharp.SourceCodeQuality.Analyzers</Product>
+    <Version>1.0.0</Version>
+    <Authors>raw inc., Tomonari Hayashi</Authors>
+    <Company>raw inc. and Tomonari Hayashi</Company>
+    <Copyright>Copyright (C) 2026 raw inc. and Tomonari Hayashi</Copyright>
+    <Description>C# の設計、命名、コメント、非同期処理を検査する Roslyn アナライザーです。</Description>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/raw-inc/ReArtWord.CSharp.SourceCodeQuality.Analyzers</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>roslyn;analyzer;csharp;source-quality;reartword</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/raw-inc/ReArtWord.CSharp.SourceCodeQuality.Analyzers.git</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' != 'false'">
+    <None Include="$(MSBuildThisFileDirectory)LICENSE"
+          Pack="true"
+          PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)licenses\GPL-3.0.txt"
+          Pack="true"
+          PackagePath="licenses/" />
+    <None Include="$(MSBuildThisFileDirectory)NOTICE"
+          Pack="true"
+          PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)THIRD_PARTY_NOTICES.md"
+          Pack="true"
+          PackagePath="" />
+    <Content Include="$(MSBuildProjectDirectory)\README.md"
+             Pack="true"
+             PackagePath=""
+             Visible="false"
+             Condition="Exists('$(MSBuildProjectDirectory)\README.md')" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.Tests'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)src\ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers\ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.Tests'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)src\ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers\ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests' and '$(MSBuildProjectName)' != 'ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers.Tests'">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)Directory.Build.props" />
+    <AdditionalFiles Include="$(MSBuildProjectFullPath)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Collections.Immutable" />
+    <Using Include="System.IO" />
+    <Using Include="System.Linq" />
+    <Using Include="System.Text" />
+    <Using Include="System.Threading" />
+    <Using Include="System.Threading.Tasks" />
+  </ItemGroup>
+</Project>

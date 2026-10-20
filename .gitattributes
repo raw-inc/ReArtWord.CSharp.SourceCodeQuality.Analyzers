@@ -1,0 +1,264 @@
+# ===== 改行コード統一設定 =====
+# デフォルトでテキストファイルをLF改行に統一
+* text=auto eol=lf
+
+# ===== C#/.NET 関連ファイル =====
+*.cs text eol=lf diff=csharp
+*.csx text eol=lf diff=csharp
+*.vb text
+*.fs text
+*.fsi text
+*.fsx text
+*.xaml text
+*.xml text
+*.config text
+*.props text
+*.targets text
+*.ruleset text
+*.nuspec text
+*.resx text
+*.resw text
+*.json text
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+
+# ===== スクリプトファイル =====
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# ===== ソースコード関連 =====
+*.sql text
+*.css text
+*.scss text
+*.sass text
+*.less text
+*.html text diff=html
+*.htm text diff=html
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.vue text
+*.php text diff=php
+
+# ===== ドキュメント =====
+*.md text eol=lf diff=markdown
+*.markdown text eol=lf diff=markdown
+*.mdx text eol=lf diff=markdown
+*.txt text
+*.tex text diff=tex
+*.adoc text
+*.textile text
+*.mustache text
+*.csv text
+*.tsv text
+*.tab text
+README text
+AUTHORS text
+CHANGELOG text
+CHANGES text
+CONTRIBUTING text
+COPYING text
+copyright text
+*COPYRIGHT* text
+INSTALL text
+license text
+LICENSE text
+NEWS text
+readme text
+*README* text
+TODO text
+
+# ===== 設定ファイル =====
+*.ini text
+*.cfg text
+*.conf text
+*.editorconfig text
+.gitattributes text
+.gitignore text
+.gitconfig text
+.gitmodules text
+Dockerfile text
+*.dockerfile text
+docker-compose.yml text
+Makefile text
+makefile text
+
+# ===== Unity 関連 =====
+*.unity text eol=lf merge=unityyamlmerge
+*.prefab text eol=lf merge=unityyamlmerge
+*.mat text eol=lf merge=unityyamlmerge
+*.anim text eol=lf merge=unityyamlmerge
+*.controller text eol=lf merge=unityyamlmerge
+*.meta text eol=lf merge=unityyamlmerge
+*.shader text eol=lf
+*.cginc text eol=lf
+*.hlsl text eol=lf
+*.glsl text eol=lf
+*.compute text eol=lf
+*.asset text eol=lf merge=unityyamlmerge
+
+# ===== バイナリファイル =====
+# 画像
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.png binary
+*.bmp binary
+*.tiff binary
+*.ico binary
+*.svg text
+*.eps binary
+*.psd binary
+*.ai binary
+*.webp binary
+
+# 動画
+*.mov binary
+*.mp4 binary
+*.avi binary
+*.webm binary
+*.flv binary
+*.m4v binary
+*.mpg binary
+*.mpeg binary
+*.wmv binary
+
+# 音声
+*.mp3 binary
+*.flac binary
+*.wav binary
+*.ogg binary
+*.m4a binary
+*.aac binary
+*.wma binary
+
+# フォント
+*.ttf binary
+*.otf binary
+*.eot binary
+*.woff binary
+*.woff2 binary
+
+# ドキュメント
+*.pdf binary
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+*.odt binary
+*.ods binary
+*.odp binary
+
+# アーカイブ
+*.7z binary
+*.gz binary
+*.tar binary
+*.tgz binary
+*.zip binary
+*.rar binary
+*.jar binary
+*.war binary
+*.ear binary
+
+# 実行ファイル
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.lib binary
+*.a binary
+*.pdb binary
+*.mdb binary
+*.app binary
+
+# Unity バイナリ
+*.cubemap binary
+*.unitypackage binary
+*.fbx binary
+*.obj binary
+*.dae binary
+*.3ds binary
+*.dxf binary
+*.max binary
+*.blend binary
+
+# その他のバイナリ
+*.bin binary
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+*.p binary
+*.pkl binary
+*.pickle binary
+*.pyc binary
+*.pyo binary
+*.pyd binary
+
+# ===== Diff 除外設定 =====
+# 自動生成ファイルは差分表示から除外
+*.designer.cs -diff
+*.generated.cs -diff
+*.Designer.cs -diff
+*.Generated.cs -diff
+*.g.cs -diff
+*.g.i.cs -diff
+*.auto.cs -diff
+
+# ===== Export 無視設定 =====
+# アーカイブ作成時に除外するファイル
+.gitattributes export-ignore
+.gitignore export-ignore
+.gitmodules export-ignore
+.github export-ignore
+.vscode export-ignore
+.vs export-ignore
+.idea export-ignore
+*.DotSettings export-ignore
+*.DotSettings.user export-ignore
+
+# ===== LFS 設定 =====
+# 大きなバイナリファイルはLFSで管理
+*.psd filter=lfs diff=lfs merge=lfs -text
+*.ai filter=lfs diff=lfs merge=lfs -text
+*.sketch filter=lfs diff=lfs merge=lfs -text
+*.fig filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.mov filter=lfs diff=lfs merge=lfs -text
+*.avi filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.7z filter=lfs diff=lfs merge=lfs -text
+*.rar filter=lfs diff=lfs merge=lfs -text
+
+# ===== 特殊ルール =====
+# SQLiteデータベースは常にバイナリとして扱う
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+
+# Visual Studio specific
+*.sln text eol=lf
+*.csproj text eol=lf
+*.vbproj text eol=lf
+*.vcxproj text eol=lf
+*.vcproj text eol=lf
+*.dbproj text eol=lf
+*.fsproj text eol=lf
+*.lsproj text eol=lf
+*.wixproj text eol=lf
+*.modelproj text eol=lf
+*.sqlproj text eol=lf
+*.wmaproj text eol=lf
+*.xproj text eol=lf
+*.props text eol=lf
+*.filters text eol=lf
+*.vcxitems text eol=lf

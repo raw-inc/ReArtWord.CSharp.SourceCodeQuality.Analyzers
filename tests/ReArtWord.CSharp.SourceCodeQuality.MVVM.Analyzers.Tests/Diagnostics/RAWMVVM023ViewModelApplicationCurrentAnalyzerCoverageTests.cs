@@ -1,0 +1,17 @@
+namespace ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers.Tests.Diagnostics;
+
+/// <summary>
+/// RAWMVVM023 のID別入口を保証する委譲テストです。
+/// </summary>
+public sealed class RAWMVVM023ViewModelApplicationCurrentAnalyzerCoverageTests
+{
+    /// <summary>
+    /// 既存の実体テストで RAWMVVM023 の代表ケースを確認します。
+    /// </summary>
+    /// <returns>非同期テスト処理です。</returns>
+    [Fact]
+    public Task RAWMVVM023_既存実体テストで代表ケースを確認する()
+    {
+        return new RAWMVVM021MvvmViewReferenceAnalyzerTests().RAWMVVM023_ViewModelからApplicationCurrent直接参照を検出する();
+    }
+}
