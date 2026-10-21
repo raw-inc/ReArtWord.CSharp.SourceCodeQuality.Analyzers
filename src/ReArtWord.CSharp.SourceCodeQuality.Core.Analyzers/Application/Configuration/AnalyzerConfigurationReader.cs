@@ -1,4 +1,5 @@
-using System.Text.RegularExpressions;
+using System.Xml;
+using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
@@ -244,9 +245,9 @@ internal static class AnalyzerConfigurationReader
         string propertyName,
         CancellationToken cancellationToken)
     {
-        Regex propertyRegex = CreatePropertyRegex(propertyName);
         foreach (AdditionalText additionalFile in options.AdditionalFiles)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             if (!additionalFile.Path.EndsWith(extension, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
@@ -258,10 +259,21 @@ internal static class AnalyzerConfigurationReader
                 continue;
             }
 
-            string content = text.ToString();
-            foreach (Match match in propertyRegex.Matches(content))
+            XDocument? document = ReadConfigurationDocument(text);
+            if (document is null)
             {
-                string value = match.Groups["value"].Value.Trim();
+                continue;
+            }
+
+            foreach (XElement element in document.Descendants())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!string.Equals(element.Name.LocalName, propertyName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                string value = element.Value.Trim();
                 if (value.Length == 0)
                 {
                     continue;
@@ -273,16 +285,30 @@ internal static class AnalyzerConfigurationReader
     }
 
     /// <summary>
-    /// プロパティ抽出用正規表現を生成します。
+    /// コメントを除外して設定ファイルのXMLを読み込みます。
     /// </summary>
-    /// <param name="propertyName">プロパティ名です。</param>
-    /// <returns>生成した正規表現です。</returns>
-    private static Regex CreatePropertyRegex(string propertyName)
+    /// <param name="text">設定ファイルの内容です。</param>
+    /// <returns>読み込んだ文書です。XMLが不正な場合は <see langword="null" /> を返します。</returns>
+    private static XDocument? ReadConfigurationDocument(SourceText text)
     {
-        string escapedName = Regex.Escape(propertyName);
-        return new Regex(
-            $"<{escapedName}[^>]*>(?<value>.*?)</{escapedName}>",
-            RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        XmlReaderSettings settings = new()
+        {
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
+            IgnoreComments = true,
+        };
+
+        try
+        {
+            using StringReader contentReader = new(text.ToString());
+            using XmlReader reader = XmlReader.Create(contentReader, settings);
+            return XDocument.Load(reader);
+        }
+        catch (XmlException)
+        {
+            // 編集途中などでXMLが不正な場合は、このファイルの設定を使いません。
+            return null;
+        }
     }
 
     /// <summary>

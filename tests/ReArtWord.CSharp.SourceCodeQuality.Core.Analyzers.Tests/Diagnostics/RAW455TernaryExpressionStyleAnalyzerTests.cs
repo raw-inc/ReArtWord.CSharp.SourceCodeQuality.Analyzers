@@ -275,4 +275,38 @@ public sealed class RAW455TernaryExpressionStyleAnalyzerTests
         Assert.DoesNotContain(generatedDiagnostics, static diagnostic => diagnostic.Id == "RAW456");
     }
 
+    /// <summary>
+    /// コメント内の閾値を無視し、既定の条件数で検査します。
+    /// </summary>
+    /// <param name="extension">設定ファイルの拡張子です。</param>
+    /// <param name="conditionCount">三項演算子の条件数です。</param>
+    /// <returns>検証処理です。</returns>
+    [Theory]
+    [InlineData(".props", 4)]
+    [InlineData(".props", 5)]
+    [InlineData(".csproj", 4)]
+    [InlineData(".csproj", 5)]
+    public async Task RAW455_XMLコメント内の設定は既定閾値を変更しない(string extension, int conditionCount)
+    {
+        IReadOnlyDictionary<string, string> additionalFiles = new Dictionary<string, string>
+        {
+            ["/repo/Settings" + extension] = "<Project><PropertyGroup><!-- <RAW455TernaryConditionCountThreshold>1</RAW455TernaryConditionCountThreshold> --></PropertyGroup></Project>",
+        };
+
+        IReadOnlyCollection<Microsoft.CodeAnalysis.Diagnostic> diagnostics = await AnalyzerTestHelper.AnalyzeAsync(
+            TernaryExpressionTestSourceFactory.BuildFalseNestedTernarySource(conditionCount),
+            new TernaryExpressionStyleAnalyzer(),
+            "/repo/src/Target.cs",
+            "ReArtWord.SourceCodeQuality.Domain",
+            additionalFiles);
+
+        if (conditionCount == 4)
+        {
+            Assert.Empty(diagnostics);
+        }
+        else
+        {
+            Assert.Equal("RAW455", Assert.Single(diagnostics).Id);
+        }
+    }
 }
