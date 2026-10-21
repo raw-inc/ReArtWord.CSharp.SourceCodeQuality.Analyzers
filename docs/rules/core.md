@@ -23,7 +23,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW101 | Error | テストを除く | 1クラスの行数を制限。既定の上限は350行 |
 | RAW102 | Error | テストを除く | class／structのフィールドをprivateに限定。.NET 6以降が対象。定数と構造体の配置互換が必要な宣言は除外 |
 | RAW110 | Error | テストを除く | structの等値性を実装する場合、`Equals(object)`、`Equals(T)`、`GetHashCode()`、`==`、`!=` の実装を揃える |
-| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` の実装を要求 |
+| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` のオーバーライドを要求。static classは対象外 |
 | RAW120A | Disabled | テストを除く | 定数を除くprivateフィールド名を `fieldName` 形式に限定 |
 | RAW120B | Disabled | テストを除く | 定数を除くprivateフィールド名を `_fieldName` 形式に限定 |
 | RAW120C | Error | テストを除く | 同じファイルで `RAW120A` と `RAW120B` が両方有効になっている設定を検出 |
@@ -94,7 +94,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW431 | Error | テストも含む | 実行ブロック内の連続した空行を検出 |
 | RAW440 | Error | テストも含む | `while (true)` を検出 |
 | RAW441 | Error | テストも含む | for／foreach／whileの本体に波括弧を要求 |
-| RAW442 | Error | テストも含む | if／elseの本体に波括弧を要求 |
+| RAW442 | Error | テストも含む | if／elseの本体に波括弧を要求。else ifは許可し、後続のifの本体を検査 |
 | RAW443 | Error | テストも含む | for文の条件省略、または定数trueの条件を検出 |
 | RAW444 | Error | テストも含む | if／else-if／whileの定数falseの条件を検出 |
 | RAW450 | Error | テストも含む | else-ifが3つ以上続く場合に、switch文またはswitch式を要求 |
@@ -112,6 +112,9 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 
 `RAW430` では、メソッド・コンストラクター・プロパティの終端と次のメンバーの間に空行を1行要求します。
 連続する属性リストの間、および最後の属性と宣言の間には空行を置きません。コメントやプリプロセッサー指示の内部は空行として数えません。
+
+`RAW461` は、参照先に `string.Contains(string, StringComparison)` がある場合に限り、`Contains` に比較方法の指定を要求します。
+.NET Standard 2.0や.NET Frameworkなど、このAPIがない環境では `string.Contains(string)` を診断しません。
 
 ## 非同期処理・命名
 
