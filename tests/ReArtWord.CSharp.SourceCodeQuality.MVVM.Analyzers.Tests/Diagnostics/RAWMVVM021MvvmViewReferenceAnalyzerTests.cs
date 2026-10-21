@@ -89,7 +89,7 @@ public sealed class RAWMVVM021MvvmViewReferenceAnalyzerTests
         string source = MvvmAnalyzerTestSources.WithToolkitStubs("""
             namespace Views
             {
-                public sealed class MainView
+                public sealed class MainView : System.Windows.Controls.UserControl
                 {
                 }
             }
@@ -110,7 +110,7 @@ public sealed class RAWMVVM021MvvmViewReferenceAnalyzerTests
         IReadOnlyCollection<Microsoft.CodeAnalysis.Diagnostic> diagnostics =
             await AnalyzeAsync(source);
 
-        Assert.True(2 <= diagnostics.Count(static diagnostic => diagnostic.Id == "RAWMVVM022"));
+        Assert.Equal(3, diagnostics.Count(static diagnostic => diagnostic.Id == "RAWMVVM022"));
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public sealed class RAWMVVM021MvvmViewReferenceAnalyzerTests
         IReadOnlyCollection<Microsoft.CodeAnalysis.Diagnostic> diagnostics =
             await AnalyzeAsync(source);
 
-        Assert.True(3 <= diagnostics.Count(static diagnostic => diagnostic.Id == "RAWMVVM022"));
+        Assert.Equal(3, diagnostics.Count(static diagnostic => diagnostic.Id == "RAWMVVM022"));
     }
 
     [Fact]

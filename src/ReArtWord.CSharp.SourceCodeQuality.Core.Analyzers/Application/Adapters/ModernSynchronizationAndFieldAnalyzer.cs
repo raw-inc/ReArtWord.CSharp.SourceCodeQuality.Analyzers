@@ -9,14 +9,11 @@ using ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Contracts.Diagnostics;
 namespace ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers;
 
 /// <summary>
-/// lock文禁止とフィールドprivate必須を検証するAnalyzerです。
+/// lock文の使用箇所とフィールドのアクセス修飾子を検証するAnalyzerです。
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
 {
-    private const string Net8LockGuidance = ".NET8ではSemaphoreSlimなどのモダンな同期機構を使用し、.NET9以上へ移行後はSystem.Threading.Lockを検討してください。";
-    private const string Net9LockGuidance = ".NET9以上ではSystem.Threading.Lockの利用を優先し、非同期要件がある場合はSemaphoreSlimなど用途に合う同期機構を使用してください。";
-
     /// <summary>
     /// サポートする診断定義を取得します。
     /// </summary>
@@ -42,12 +39,11 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
         {
             bool isNet6OrGreater = TargetFrameworkVersionDetector.IsNet6OrGreater(compilationContext.Compilation);
             bool isNet8OrGreater = TargetFrameworkVersionDetector.IsNet8OrGreater(compilationContext.Compilation);
-            bool isNet9OrGreater = TargetFrameworkVersionDetector.IsNet9OrGreater(compilationContext.Compilation);
 
             if (isNet8OrGreater)
             {
                 compilationContext.RegisterSyntaxNodeAction(
-                    nodeContext => AnalyzeLockStatement(nodeContext, isNet9OrGreater),
+                    AnalyzeLockStatement,
                     SyntaxKind.LockStatement);
             }
 
@@ -64,8 +60,7 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
     /// lock文利用を解析します。
     /// </summary>
     /// <param name="context">構文ノード解析コンテキストです。</param>
-    /// <param name="isNet9OrGreater">.NET9以上かどうかです。</param>
-    private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context, bool isNet9OrGreater)
+    private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context)
     {
         if (context.Node is not LockStatementSyntax lockStatement)
         {
@@ -77,15 +72,10 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        string guidance = isNet9OrGreater
-            ? Net9LockGuidance
-            : Net8LockGuidance;
-
         context.ReportDiagnostic(
             Diagnostic.Create(
                 DiagnosticCatalog.LockStatementRestrictionRule,
-                lockStatement.LockKeyword.GetLocation(),
-                guidance));
+                lockStatement.LockKeyword.GetLocation()));
     }
 
     /// <summary>

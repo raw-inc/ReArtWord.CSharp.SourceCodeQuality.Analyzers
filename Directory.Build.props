@@ -17,7 +17,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <Product>ReArtWord.CSharp.SourceCodeQuality.Analyzers</Product>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Authors>raw inc., Tomonari Hayashi</Authors>
     <Company>raw inc. and Tomonari Hayashi</Company>
     <Copyright>Copyright (C) 2026 raw inc. and Tomonari Hayashi</Copyright>

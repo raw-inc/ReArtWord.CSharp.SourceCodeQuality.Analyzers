@@ -11,12 +11,12 @@ Coreを基本として、CommunityToolkit.Mvvm を使うプロジェクトには
 | `ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers` | CommunityToolkit.Mvvm を使う ViewModel があるプロジェクト |
 | `ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers` | BlazorなどのRazorコンポーネントがあるプロジェクト |
 
-v1.0.0 は .NET SDK 10.0.402 で検証しています。アナライザーの参照先は Roslyn 4.13.0、アセンブリの対象は `netstandard2.0` です。
+v1.0.1 は .NET SDK 10.0.400 で検証しています。アナライザーの参照先は Roslyn 4.13.0、アセンブリの対象は `netstandard2.0` です。
 検査対象アプリケーションの対象フレームワークとは別の条件です。特定の.NETバージョンでのみ有効になる規則は、各ルール一覧に記載しています。
 
 ## NuGetパッケージを参照する
 
-以下はv1.0.0を参照する設定例です。NuGetフィードは、パッケージの配布元に合わせて指定してください。
+以下はv1.0.1を参照する設定例です。NuGetフィードは、パッケージの配布元に合わせて指定してください。
 ソースからパッケージを作る場合は、[配布パッケージを生成する](../development/releases.md#配布パッケージを生成する)を参照してください。
 
 ### Coreを追加する
@@ -29,7 +29,7 @@ v1.0.0 は .NET SDK 10.0.402 で検証しています。アナライザーの参
 </PropertyGroup>
 <ItemGroup>
   <PackageReference Include="ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers"
-                    Version="1.0.0"
+                    Version="1.0.1"
                     PrivateAssets="all"
                     IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   <AdditionalFiles Include="$(MSBuildProjectFullPath)" />
@@ -47,7 +47,7 @@ Coreに加え、次の参照を追加してください。
 
 ```xml
 <PackageReference Include="ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers"
-                  Version="1.0.0"
+                  Version="1.0.1"
                   PrivateAssets="all"
                   IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
 ```
@@ -58,7 +58,7 @@ Coreに加え、次の参照を追加してください。Razorの検査にCommu
 
 ```xml
 <PackageReference Include="ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers"
-                  Version="1.0.0"
+                  Version="1.0.1"
                   PrivateAssets="all"
                   IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
 ```
@@ -68,9 +68,9 @@ Coreに加え、次の参照を追加してください。Razorの検査にCommu
 `Directory.Packages.props` に使用するパッケージのバージョンを指定し、`.csproj` 側の `PackageReference` から `Version` を外してください。
 
 ```xml
-<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers" Version="1.0.0" />
-<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers" Version="1.0.0" />
-<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers" Version="1.0.0" />
+<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers" Version="1.0.1" />
+<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.MVVM.Analyzers" Version="1.0.1" />
+<PackageVersion Include="ReArtWord.CSharp.SourceCodeQuality.Razor.Analyzers" Version="1.0.1" />
 ```
 
 ## ソースを直接参照する

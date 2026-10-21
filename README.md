@@ -29,7 +29,7 @@ dotnet build -warnaserror
 Coreには、日本語のXMLコメントや独自の書式・命名規則も含まれます。
 既定値と適用範囲は各ルール一覧に記載しています。privateフィールドの命名方式は選択式で、既定では無効です。
 
-v1.0.0は.NET SDK 10.0.402で検証しています。利用条件と参照方法の詳細は[導入手順](docs/guides/installation.md)を参照してください。
+v1.0.1は.NET SDK 10.0.400で検証しています。利用条件と参照方法の詳細は[導入手順](docs/guides/installation.md)を参照してください。
 
 ## 目的から探す
 

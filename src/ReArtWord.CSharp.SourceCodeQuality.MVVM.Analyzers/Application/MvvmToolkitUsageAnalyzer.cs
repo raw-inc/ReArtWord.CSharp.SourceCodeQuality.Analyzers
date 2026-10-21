@@ -45,7 +45,7 @@ public sealed class MvvmToolkitUsageAnalyzer : DiagnosticAnalyzer
             AnalyzeAssignment,
             SyntaxKind.AddAssignmentExpression,
             SyntaxKind.SubtractAssignmentExpression);
-        context.RegisterSyntaxNodeAction(AnalyzeIdentifierName, SyntaxKind.IdentifierName);
+        context.RegisterSyntaxNodeAction(AnalyzeTypeName, SyntaxKind.IdentifierName, SyntaxKind.GenericName);
         context.RegisterSyntaxNodeAction(AnalyzeMemberAccess, SyntaxKind.SimpleMemberAccessExpression);
     }
 
@@ -226,14 +226,14 @@ public sealed class MvvmToolkitUsageAnalyzer : DiagnosticAnalyzer
     }
 
     /// <summary>
-    /// 識別子名を検証します。
+    /// 型への参照を検証します。
     /// </summary>
     /// <param name="context">構文ノード解析コンテキストです。</param>
-    private static void AnalyzeIdentifierName(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeTypeName(SyntaxNodeAnalysisContext context)
     {
-        if (context.Node is IdentifierNameSyntax identifierName)
+        if (context.Node is SimpleNameSyntax typeName)
         {
-            MvvmViewReferenceRuleAnalyzer.AnalyzeIdentifierName(context, identifierName);
+            MvvmViewReferenceRuleAnalyzer.AnalyzeTypeName(context, typeName);
         }
     }
 

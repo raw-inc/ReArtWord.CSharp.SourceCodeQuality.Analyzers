@@ -3,7 +3,7 @@
 [ドキュメント一覧](../README.md) · [開発環境と検証](build.md) · [ルールを開発する](rules.md)
 
 Core、MVVM、Razorは、`Directory.Build.props` の `Version` を共通のパッケージバージョンとして使用します。
-v1.0.0のルールは、各プロジェクトの `AnalyzerReleases.Shipped.md` に記録しています。
+公開版ごとの診断規則は、各プロジェクトの `AnalyzerReleases.Shipped.md` に記録しています。
 
 ## 診断のリリース情報を更新する
 

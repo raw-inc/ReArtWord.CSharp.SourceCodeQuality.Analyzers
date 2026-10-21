@@ -1,3 +1,12 @@
+## Release 1.0.1
+
+; 診断規則の変更はありません。
+
+### New Rules
+
+Rule ID | Category | Severity | Notes
+--------|----------|----------|------
+
 ## Release 1.0.0
 
 ### New Rules
