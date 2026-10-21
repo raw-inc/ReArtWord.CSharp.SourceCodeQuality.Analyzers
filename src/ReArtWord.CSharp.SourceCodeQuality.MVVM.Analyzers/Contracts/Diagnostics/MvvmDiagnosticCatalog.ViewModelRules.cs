@@ -173,7 +173,7 @@ internal static partial class MvvmDiagnosticCatalog
         "MVVM",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: "ViewModelからWPF/MAUI/Avaloniaやプロジェクト内View名前空間への参照を禁止します.");
+        description: "ViewModelからWPF・MAUI・AvaloniaのUI基底型とその派生型、およびWPFのMessageBoxへの参照を禁止します.");
 
     /// <summary>
     /// ViewModelからApplication.Current直接参照禁止ルールの診断定義です。
