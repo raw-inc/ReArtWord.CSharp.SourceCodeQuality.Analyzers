@@ -117,7 +117,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 
 | ID | 既定 | 対象 | 検査内容 |
 | --- | --- | --- | --- |
-| RAW501 | Error | テストを除く | `lock` 文を検出。.NET 8以降が対象 |
+| RAW501 | Error | テストを除く | `lock` 文を検出。.NET 8以降が対象。.NET 9以降で対象の式が `System.Threading.Lock` 型の場合は、`EnterScope()` を `using` 文で使う書き方を案内 |
 | RAW510 | Error | テストを除く | Task／ValueTaskを返すメソッドの最終引数に、既定値付きのCancellationTokenを要求 |
 | RAW511 | Error | テストを除く | Task／ValueTaskの結果を破棄する処理、awaitしない単独呼出しを検出 |
 | RAW601 | Error | テストを除く | asyncメソッド名に `Async` 接尾辞を要求 |
@@ -129,6 +129,20 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW615 | Warning | テストを除く | enum名に `E` 接頭辞を提案 |
 | RAW616 | Error | テストを除く | interface名に `I` 接頭辞を要求 |
 | RAW617 | Error | テストを除く | class／struct／interface／record／enum名をPascalCaseに限定 |
+
+`RAW501` は、`System.Threading.Lock` 型を使った `lock` 文も検出します。
+.NET 9以降で `System.Threading.Lock` を使う場合は、`lock (gate)` の代わりに次のように記述してください。
+`gate` は `System.Threading.Lock` 型のインスタンスです。
+
+```csharp
+using (gate.EnterScope())
+{
+    count++;
+}
+```
+
+`EnterScope()` が返すスコープは、`using` 文の終了時にロックを解放します。
+非同期処理で排他制御が必要な場合は、`SemaphoreSlim` など用途に合う同期機構を使用してください。
 
 ## リリース情報
 

@@ -16,6 +16,7 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
 {
     private const string Net8LockGuidance = ".NET8ではSemaphoreSlimなどのモダンな同期機構を使用し、.NET9以上へ移行後はSystem.Threading.Lockを検討してください。";
     private const string Net9LockGuidance = ".NET9以上ではSystem.Threading.Lockの利用を優先し、非同期要件がある場合はSemaphoreSlimなど用途に合う同期機構を使用してください。";
+    private const string ScopedLockGuidance = "System.Threading.LockのEnterScope()をusing文で使用してください（例: using (gate.EnterScope())）。";
 
     /// <summary>
     /// サポートする診断定義を取得します。
@@ -46,8 +47,12 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
 
             if (isNet8OrGreater)
             {
+                INamedTypeSymbol? lockType = isNet9OrGreater
+                    ? compilationContext.Compilation.GetTypeByMetadataName("System.Threading.Lock")
+                    : null;
+
                 compilationContext.RegisterSyntaxNodeAction(
-                    nodeContext => AnalyzeLockStatement(nodeContext, isNet9OrGreater),
+                    nodeContext => AnalyzeLockStatement(nodeContext, isNet9OrGreater, lockType),
                     SyntaxKind.LockStatement);
             }
 
@@ -65,7 +70,11 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
     /// </summary>
     /// <param name="context">構文ノード解析コンテキストです。</param>
     /// <param name="isNet9OrGreater">.NET9以上かどうかです。</param>
-    private static void AnalyzeLockStatement(SyntaxNodeAnalysisContext context, bool isNet9OrGreater)
+    /// <param name="lockType">System.Threading.Lockの型シンボルです。</param>
+    private static void AnalyzeLockStatement(
+        SyntaxNodeAnalysisContext context,
+        bool isNet9OrGreater,
+        INamedTypeSymbol? lockType)
     {
         if (context.Node is not LockStatementSyntax lockStatement)
         {
@@ -80,6 +89,14 @@ public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer
         string guidance = isNet9OrGreater
             ? Net9LockGuidance
             : Net8LockGuidance;
+
+        if (lockType is not null
+            && SymbolEqualityComparer.Default.Equals(
+                context.SemanticModel.GetTypeInfo(lockStatement.Expression, context.CancellationToken).Type,
+                lockType))
+        {
+            guidance = ScopedLockGuidance;
+        }
 
         context.ReportDiagnostic(
             Diagnostic.Create(
