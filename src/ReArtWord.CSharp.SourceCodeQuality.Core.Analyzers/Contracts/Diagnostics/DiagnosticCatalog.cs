@@ -68,7 +68,7 @@ internal static partial class DiagnosticCatalog
     public const string VarPrimitiveRestrictionRuleId = "RAW421";
 
     /// <summary>
-    /// lock文禁止ルールの診断IDです。
+    /// 排他制御・借用方法の検討を促すルールの診断IDです。
     /// </summary>
     public const string LockStatementRestrictionRuleId = "RAW501";
 
@@ -420,16 +420,16 @@ internal static partial class DiagnosticCatalog
         description: "varはboolを除くプリミティブ型で禁止し、型付き静的メンバー例外のみ許可します.");
 
     /// <summary>
-    /// lock文禁止ルールの診断定義です。
+    /// 排他制御・借用方法の検討を促すルールの診断定義です。
     /// </summary>
     public static readonly DiagnosticDescriptor LockStatementRestrictionRule = new(
         LockStatementRestrictionRuleId,
-        "lock文禁止",
-        "lock文は禁止です。{0}",
+        "用途に応じた排他制御・借用方法の検討",
+        "lock文を用いずに、処理の性質や共有資源の扱いに合った排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
         "並行性",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: ".NET8以上ではlock文を禁止し、より安全で意図が明確な同期機構への移行を促します.");
+        description: ".NET8以上でlock文を検出し、同期・非同期の別や共有資源の利用範囲に応じた排他制御・借用方法の検討を促します.");
 
     /// <summary>
     /// フィールドprivate必須ルールの診断定義です。
