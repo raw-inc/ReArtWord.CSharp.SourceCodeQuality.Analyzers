@@ -23,7 +23,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW101 | Error | テストを除く | 1クラスの行数を制限。既定の上限は350行 |
 | RAW102 | Error | テストを除く | class／structのフィールドをprivateに限定。.NET 6以降が対象。定数と構造体の配置互換が必要な宣言は除外 |
 | RAW110 | Error | テストを除く | structの等値性を実装する場合、`Equals(object)`、`Equals(T)`、`GetHashCode()`、`==`、`!=` の実装を揃える |
-| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` の実装を要求 |
+| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` のオーバーライドを要求。static classは対象外 |
 | RAW120A | Disabled | テストを除く | 定数を除くprivateフィールド名を `fieldName` 形式に限定 |
 | RAW120B | Disabled | テストを除く | 定数を除くprivateフィールド名を `_fieldName` 形式に限定 |
 | RAW120C | Error | テストを除く | 同じファイルで `RAW120A` と `RAW120B` が両方有効になっている設定を検出 |
