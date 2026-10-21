@@ -166,7 +166,27 @@ public sealed class NullAndStringComparisonAnalyzer : DiagnosticAnalyzer
             return false;
         }
 
-        return HasFirstStringArgument(invocation, semanticModel, cancellationToken);
+        return HasFirstStringArgument(invocation, semanticModel, cancellationToken)
+            && (!methodSymbol.Name.Equals("Contains", StringComparison.Ordinal)
+                || SupportsContainsWithComparison(methodSymbol.ContainingType, semanticModel.Compilation));
+    }
+
+    /// <summary>
+    /// 参照先のstring型に、比較方法を指定できるContainsがあるか判定します。
+    /// </summary>
+    /// <param name="stringType">参照先のstring型です。</param>
+    /// <param name="compilation">コンパイル情報です。</param>
+    /// <returns>利用できるAPIがある場合は <see langword="true" /> を返します。</returns>
+    private static bool SupportsContainsWithComparison(INamedTypeSymbol stringType, Compilation compilation)
+    {
+        INamedTypeSymbol? comparisonType = compilation.GetTypeByMetadataName("System.StringComparison");
+        return comparisonType is not null
+            && stringType.GetMembers("Contains").OfType<IMethodSymbol>().Any(method =>
+                !method.IsStatic
+                && method.DeclaredAccessibility == Accessibility.Public
+                && method.Parameters.Length == 2
+                && IsStringType(method.Parameters[0].Type)
+                && SymbolEqualityComparer.Default.Equals(method.Parameters[1].Type, comparisonType));
     }
 
     /// <summary>

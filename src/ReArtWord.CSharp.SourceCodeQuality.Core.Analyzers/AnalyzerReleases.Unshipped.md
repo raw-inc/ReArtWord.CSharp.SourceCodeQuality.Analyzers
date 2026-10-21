@@ -4,3 +4,5 @@
 ; RAW101・RAW130・RAW455: XMLコメント内の上限値を無視します。
 ; RAW301: XMLコメント内のRAW301AllowedNoWarnIdsを許可IDへ追加しません。
 ; 独自設定はXMLとして読み取り、XMLが不正なファイルやDTDを含むファイルを無視します。
+
+; RAW461: string.Contains(string, StringComparison) を参照できない環境では、Containsを診断しません。
