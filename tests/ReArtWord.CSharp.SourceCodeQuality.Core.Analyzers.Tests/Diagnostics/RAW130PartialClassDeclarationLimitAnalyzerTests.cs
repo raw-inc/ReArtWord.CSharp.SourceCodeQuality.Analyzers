@@ -163,6 +163,41 @@ public sealed class RAW130PartialClassDeclarationLimitAnalyzerTests
         Assert.DoesNotContain(generatedDiagnostics, static diagnostic => diagnostic.Id == "RAW130");
     }
 
+    /// <summary>
+    /// コメント内の上限を無視し、既定の宣言数で検査します。
+    /// </summary>
+    /// <param name="extension">設定ファイルの拡張子です。</param>
+    /// <param name="declarationCount">partial宣言数です。</param>
+    /// <returns>検証処理です。</returns>
+    [Theory]
+    [InlineData(".props", 4)]
+    [InlineData(".props", 5)]
+    [InlineData(".csproj", 4)]
+    [InlineData(".csproj", 5)]
+    public async Task RAW130_XMLコメント内の設定は既定上限を変更しない(string extension, int declarationCount)
+    {
+        IReadOnlyDictionary<string, string> additionalFiles = new Dictionary<string, string>
+        {
+            ["/repo/Settings" + extension] = "<Project><PropertyGroup><!-- <RAW130MaxPartialClassDeclarationCount>1</RAW130MaxPartialClassDeclarationCount> --></PropertyGroup></Project>",
+        };
+
+        IReadOnlyCollection<Microsoft.CodeAnalysis.Diagnostic> diagnostics = await AnalyzerTestHelper.AnalyzeAsync(
+            BuildPartialClassSource(declarationCount),
+            new PartialClassDeclarationLimitAnalyzer(),
+            "/repo/src/Target.cs",
+            "ReArtWord.SourceCodeQuality.Domain",
+            additionalFiles);
+
+        if (declarationCount == 4)
+        {
+            Assert.Empty(diagnostics);
+        }
+        else
+        {
+            Assert.Equal("RAW130", Assert.Single(diagnostics).Id);
+        }
+    }
+
     private static string BuildPartialClassSource(int declarationCount)
     {
         StringBuilder builder = new();
