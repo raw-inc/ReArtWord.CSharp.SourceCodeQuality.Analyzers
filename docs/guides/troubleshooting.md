@@ -40,8 +40,7 @@ v1.0.1はRoslyn 4.13.0を参照し、.NET SDK 10.0.400で検証しています�
 
 ## XMLコメントを書いても未記載と診断される
 
-CoreのXMLコメント検査では、コンパイラーが解析したドキュメントコメントを使用します。
-利用先の `.csproj` または共通の `Directory.Build.props` で、`GenerateDocumentationFile` を `true` にしてください。
+XMLコメントの検査には、利用先の `.csproj` または共通の `Directory.Build.props` で、`GenerateDocumentationFile` を `true` にしてください。
 設定例は[Coreを追加する](installation.md#coreを追加する)に記載しています。
 
 ## privateフィールドの命名で警告が出る
@@ -51,7 +50,7 @@ CoreのXMLコメント検査では、コンパイラーが解析したドキュ�
 
 `RAW612` は一般のアンダースコア禁止規則です。
 privateフィールドの専用規則を有効にすれば、そのフィールドは専用規則で検査されます。
-ローカル変数や定数など、専用規則の対象外には引き続き `RAW612` が適用されます。
+ローカル変数や定数など、専用規則の対象外には `RAW612` が適用されます。
 
 ## MVVM Toolkitの参照を指摘される
 

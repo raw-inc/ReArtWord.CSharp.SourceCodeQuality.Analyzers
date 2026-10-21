@@ -56,7 +56,7 @@ dotnet_diagnostic.RAW120B.severity = error
 
 専用規則を有効にしたprivateフィールドには、一般のアンダースコア禁止規則 `RAW612` を重ねて適用しません。
 たとえば `_count` は `RAW120B` に適合し、`_count_value` は `RAW120B` で検出します。
-ローカル変数、private以外のフィールド、定数には引き続き `RAW612` を適用します。
+ローカル変数、private以外のフィールド、定数には `RAW612` を適用します。
 専用規則をどちらも無効にした場合も、`RAW612` 自体は有効です。
 
 ## 行数などの上限を変更する
@@ -87,9 +87,8 @@ dotnet_diagnostic.RAW120B.severity = error
 | `RAW455TernaryConditionCountThreshold` | `5` | 三項演算子の条件数がこの値以上になると診断 |
 | `RAW301AllowedNoWarnIds` | `CS1591;CA1707` | `NoWarn` に指定できる診断ID。セミコロン区切り |
 
-独自設定は、`AdditionalFiles` に登録した `.props` と `.csproj` をXMLとして読み取ります。
-プロパティを記述するだけではアナライザーに渡らないため、上記の `AdditionalFiles` も指定してください。
-XMLコメント（`<!-- -->`）内の設定は無視します。XMLが不正なファイルやDTDを含むファイルの設定も使用しません。
+独自設定は、`AdditionalFiles` に登録した `.props` と `.csproj` のプロパティ要素から読み取ります。
+設定ファイルにはDTDを含まない正しいXMLを使用してください。
 共通の `.props` とプロジェクト別の `.csproj` の両方に有効な数値がある場合は、`.csproj` の値を優先します。
 `.csproj` が不正な値なら `.props`、そこにも有効な値がなければ既定値を使います。数値には正の整数を指定してください。
 

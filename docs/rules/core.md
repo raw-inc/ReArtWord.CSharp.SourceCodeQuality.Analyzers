@@ -23,7 +23,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW101 | Error | テストを除く | 1クラスの行数を制限。既定の上限は350行 |
 | RAW102 | Error | テストを除く | class／structのフィールドをprivateに限定。.NET 6以降が対象。定数と構造体の配置互換が必要な宣言は除外 |
 | RAW110 | Error | テストを除く | structの等値性を実装する場合、`Equals(object)`、`Equals(T)`、`GetHashCode()`、`==`、`!=` の実装を揃える |
-| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` のオーバーライドを要求。static classは対象外 |
+| RAW111 | Error | テストを除く | 具体的な処理を持たないデータ型に `ToString()` のオーバーライドを要求 |
 | RAW120A | Disabled | テストを除く | 定数を除くprivateフィールド名を `fieldName` 形式に限定 |
 | RAW120B | Disabled | テストを除く | 定数を除くprivateフィールド名を `_fieldName` 形式に限定 |
 | RAW120C | Error | テストを除く | 同じファイルで `RAW120A` と `RAW120B` が両方有効になっている設定を検出 |
@@ -41,8 +41,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 `RAW120A` と `RAW120B` は選択式です。[privateフィールドの命名方式](../guides/configuration.md#privateフィールドの命名方式を選ぶ)を参照してください。
 クラスの行数とpartial宣言数は[独自設定](../guides/configuration.md#行数などの上限を変更する)で変更できます。
 
-`RAW172` は、実際の `DllImportAttribute` を型情報で判定します。別名や完全修飾名も対象です。
-`LibraryImportAttribute` を参照できないプロジェクトでは診断しません。
+`RAW172` は、`LibraryImportAttribute` を参照できるプロジェクトで検査します。
 変更する場合は、partial宣言、unsafeの許可、文字列マーシャリング、呼出し規約などの互換性を確認してください。自動修正は提供していません。
 
 ## XMLコメント
@@ -56,7 +55,6 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW203 | Error | テストも含む | 戻り値があるメソッドに `returns` を要求 |
 
 コメントには、呼出し側が知る必要のある役割や戻り値を記載してください。
-これらの規則はコメントの有無や形式を確認するもので、説明の正確さまでは判定しません。
 
 ## 警告の抑制・作業コメント・例外処理
 
@@ -94,7 +92,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW431 | Error | テストも含む | 実行ブロック内の連続した空行を検出 |
 | RAW440 | Error | テストも含む | `while (true)` を検出 |
 | RAW441 | Error | テストも含む | for／foreach／whileの本体に波括弧を要求 |
-| RAW442 | Error | テストも含む | if／elseの本体に波括弧を要求。else ifは許可し、後続のifの本体を検査 |
+| RAW442 | Error | テストも含む | if／else if／elseの各分岐に波括弧を要求 |
 | RAW443 | Error | テストも含む | for文の条件省略、または定数trueの条件を検出 |
 | RAW444 | Error | テストも含む | if／else-if／whileの定数falseの条件を検出 |
 | RAW450 | Error | テストも含む | else-ifが3つ以上続く場合に、switch文またはswitch式を要求 |
@@ -113,8 +111,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 `RAW430` では、メソッド・コンストラクター・プロパティの終端と次のメンバーの間に空行を1行要求します。
 連続する属性リストの間、および最後の属性と宣言の間には空行を置きません。コメントやプリプロセッサー指示の内部は空行として数えません。
 
-`RAW461` は、参照先に `string.Contains(string, StringComparison)` がある場合に限り、`Contains` に比較方法の指定を要求します。
-.NET Standard 2.0や.NET Frameworkなど、このAPIがない環境では `string.Contains(string)` を診断しません。
+`RAW461` による `Contains` の検査は、`string.Contains(string, StringComparison)` を参照できるプロジェクトが対象です。
 
 ## 非同期処理・命名
 
@@ -134,10 +131,9 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW617 | Error | テストを除く | class／struct／interface／record／enum名をPascalCaseに限定 |
 
 `RAW501` は、共有資源の扱いを見直し、用途に合う排他制御や借用方法を検討するための規則です。
-`System.Threading.Lock` 型を使った `lock` 文も検出します。
 同期・非同期の別、保護するデータの範囲、資源の所有者や借用期間に応じて方法を選択してください。
 
-以下は検討時の選択肢の例です。特定のAPIへの一律の置き換えを求めるものではありません。
+用途に応じて、次のような方法を検討してください。
 
 | 用途の例 | 選択肢の例 | 検討する点 |
 | --- | --- | --- |
@@ -147,7 +143,6 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | 処理単位でのバッファの借用 | [`MemoryPool<T>.Rent` と `IMemoryOwner<T>`](https://learn.microsoft.com/dotnet/standard/memory-and-spans/memory-t-usage-guidelines) | 利用を終えてから返却し、返却後はバッファにアクセスしません |
 
 借用は資源の所有者と利用期間を管理する方法です。借りた資源を複数の処理で共有する場合は、別途同期を検討してください。
-この規則は `lock` 文の使用箇所を報告し、選んだ方法が処理に適しているかまでは判定しません。
 
 ## リリース情報
 
