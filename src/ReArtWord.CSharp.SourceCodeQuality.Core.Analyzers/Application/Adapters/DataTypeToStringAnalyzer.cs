@@ -89,7 +89,7 @@ public sealed class DataTypeToStringAnalyzer : DiagnosticAnalyzer
             return false;
         }
 
-        return !namedType.IsAbstract;
+        return !namedType.IsAbstract && !namedType.IsStatic;
     }
 
     /// <summary>

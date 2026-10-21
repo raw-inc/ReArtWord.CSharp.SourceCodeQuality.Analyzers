@@ -123,7 +123,7 @@ public sealed partial class RAW440ControlFlowStyleAnalyzerTests
                 "/repo/src/Target.cs",
                 "ReArtWord.SourceCodeQuality.Domain");
 
-        Assert.Contains(diagnostics, static diagnostic => diagnostic.Id == "RAW450");
+        Assert.Equal("RAW450", Assert.Single(diagnostics).Id);
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public sealed partial class RAW440ControlFlowStyleAnalyzerTests
                 "/repo/src/Target.cs",
                 "ReArtWord.SourceCodeQuality.Domain");
 
-        Assert.DoesNotContain(diagnostics, static diagnostic => diagnostic.Id == "RAW450");
+        Assert.Empty(diagnostics);
     }
 
     [Fact]
@@ -304,6 +304,6 @@ public sealed partial class RAW440ControlFlowStyleAnalyzerTests
                 "/repo/tests/Target.cs",
                 "ReArtWord.SourceCodeQuality.Domain.Tests");
 
-        Assert.Contains(diagnostics, static diagnostic => diagnostic.Id == "RAW450");
+        Assert.Equal("RAW450", Assert.Single(diagnostics).Id);
     }
 }
