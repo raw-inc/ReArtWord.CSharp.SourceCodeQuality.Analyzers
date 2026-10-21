@@ -11,14 +11,14 @@ XMLコメントの検査には、`.csproj` または `Directory.Build.props` の
 
 ```xml
 <PackageReference Include="ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers"
-                  Version="1.0.0"
+                  Version="1.0.1"
                   PrivateAssets="all"
                   IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
 <AdditionalFiles Include="$(MSBuildProjectFullPath)" />
 ```
 
 ソース参照・DLL参照を含む手順は[導入する](https://github.com/raw-inc/ReArtWord.CSharp.SourceCodeQuality.Analyzers/blob/main/docs/guides/installation.md)を参照してください。
-v1.0.0は.NET SDK 10.0.402で検証しています。
+v1.0.1は.NET SDK 10.0.400で検証しています。
 
 ## ルールと設定
 

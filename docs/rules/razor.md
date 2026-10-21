@@ -3,7 +3,7 @@
 [ドキュメント一覧](../README.md) · [導入する](../guides/installation.md) · [検査を設定する](../guides/configuration.md)
 
 Razorコンポーネントの処理配置と、取消可能な呼出しへの `CancellationToken` の伝搬を検査します。
-この一覧はv1.0.0の2ルールです。Coreと併用してください。
+この一覧はv1.0.1の2ルールです。Coreと併用してください。
 
 | ID | 既定 | 検査内容 |
 | --- | --- | --- |
