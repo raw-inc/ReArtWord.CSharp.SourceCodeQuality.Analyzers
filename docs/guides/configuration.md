@@ -87,12 +87,13 @@ dotnet_diagnostic.RAW120B.severity = error
 | `RAW455TernaryConditionCountThreshold` | `5` | 三項演算子の条件数がこの値以上になると診断 |
 | `RAW301AllowedNoWarnIds` | `CS1591;CA1707` | `NoWarn` に指定できる診断ID。セミコロン区切り |
 
-独自設定は、`AdditionalFiles` に登録したファイルの本文から読み取ります。
+独自設定は、`AdditionalFiles` に登録した `.props` と `.csproj` をXMLとして読み取ります。
 プロパティを記述するだけではアナライザーに渡らないため、上記の `AdditionalFiles` も指定してください。
+XMLコメント（`<!-- -->`）内の設定は無視します。XMLが不正なファイルやDTDを含むファイルの設定も使用しません。
 共通の `.props` とプロジェクト別の `.csproj` の両方に有効な数値がある場合は、`.csproj` の値を優先します。
 `.csproj` が不正な値なら `.props`、そこにも有効な値がなければ既定値を使います。数値には正の整数を指定してください。
 
-v1.0.0ではMSBuildの条件式やプロパティ参照を評価せず、ファイルに書かれた値を読み取ります。
+MSBuildの条件式やプロパティ参照は評価せず、ファイルに書かれた値を読み取ります。
 設定値は直接記述し、同じ設定を複数の条件付き `PropertyGroup` に分けないでください。
 `RAW301AllowedNoWarnIds` は、既定の許可IDと各ファイルに記述したIDを合わせて使用します。
 
