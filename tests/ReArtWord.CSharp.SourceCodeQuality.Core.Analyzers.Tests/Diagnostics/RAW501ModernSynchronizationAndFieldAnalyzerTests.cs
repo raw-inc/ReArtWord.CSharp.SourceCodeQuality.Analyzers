@@ -39,7 +39,7 @@ public sealed class RAW501ModernSynchronizationAndFieldAnalyzerTests
     }
 
     [Fact]
-    public async Task RAW501_NET9以上ではLock推奨文言を含む()
+    public async Task RAW501_NET9以上でも用途に応じた方法の検討を促す()
     {
         const string source = """
             public sealed class Target
@@ -63,9 +63,11 @@ public sealed class RAW501ModernSynchronizationAndFieldAnalyzerTests
                 "ReArtWord.SourceCodeQuality.Domain",
                 preprocessorSymbols: ["NET9_0_OR_GREATER"]);
 
-        Assert.Contains(diagnostics, static diagnostic =>
-            diagnostic.Id == "RAW501"
-            && diagnostic.GetMessage(CultureInfo.InvariantCulture).Contains("System.Threading.Lock", StringComparison.Ordinal));
+        Microsoft.CodeAnalysis.Diagnostic diagnostic = Assert.Single(diagnostics);
+        Assert.Equal("RAW501", diagnostic.Id);
+        Assert.Equal(
+            "lock文は禁止です。処理の性質や共有資源の扱いに応じて、適切な排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
+            diagnostic.GetMessage(CultureInfo.InvariantCulture));
     }
 
     [Fact]

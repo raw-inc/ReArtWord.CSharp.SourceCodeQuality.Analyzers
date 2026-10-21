@@ -425,11 +425,11 @@ internal static partial class DiagnosticCatalog
     public static readonly DiagnosticDescriptor LockStatementRestrictionRule = new(
         LockStatementRestrictionRuleId,
         "lock文禁止",
-        "lock文は禁止です。{0}",
+        "lock文は禁止です。処理の性質や共有資源の扱いに応じて、適切な排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
         "並行性",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
-        description: ".NET8以上ではlock文を禁止し、より安全で意図が明確な同期機構への移行を促します.");
+        description: ".NET8以上でlock文を検出し、同期・非同期の別や共有資源の利用範囲に応じた排他制御・借用方法の検討を促します.");
 
     /// <summary>
     /// フィールドprivate必須ルールの診断定義です。

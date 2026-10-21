@@ -120,7 +120,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 
 | ID | 既定 | 対象 | 検査内容 |
 | --- | --- | --- | --- |
-| RAW501 | Error | テストを除く | `lock` 文を検出。.NET 8以降が対象。.NET 9以降で対象の式が `System.Threading.Lock` 型の場合は、`EnterScope()` を `using` 文で使う書き方を案内 |
+| RAW501 | Error | テストを除く | `lock` 文を検出し、用途に応じた排他制御・借用方法の検討を促す。.NET 8以降が対象 |
 | RAW510 | Error | テストを除く | Task／ValueTaskを返すメソッドの最終引数に、既定値付きのCancellationTokenを要求 |
 | RAW511 | Error | テストを除く | Task／ValueTaskの結果を破棄する処理、awaitしない単独呼出しを検出 |
 | RAW601 | Error | テストを除く | asyncメソッド名に `Async` 接尾辞を要求 |
@@ -133,19 +133,21 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW616 | Error | テストを除く | interface名に `I` 接頭辞を要求 |
 | RAW617 | Error | テストを除く | class／struct／interface／record／enum名をPascalCaseに限定 |
 
-`RAW501` は、`System.Threading.Lock` 型を使った `lock` 文も検出します。
-.NET 9以降で `System.Threading.Lock` を使う場合は、`lock (gate)` の代わりに次のように記述してください。
-`gate` は `System.Threading.Lock` 型のインスタンスです。
+`RAW501` は、共有資源の扱いを見直し、用途に合う排他制御や借用方法を検討するための規則です。
+`System.Threading.Lock` 型を使った `lock` 文も検出します。
+同期・非同期の別、保護するデータの範囲、資源の所有者や借用期間に応じて方法を選択してください。
 
-```csharp
-using (gate.EnterScope())
-{
-    count++;
-}
-```
+以下は検討時の選択肢の例です。特定のAPIへの一律の置き換えを求めるものではありません。
 
-`EnterScope()` が返すスコープは、`using` 文の終了時にロックを解放します。
-非同期処理で排他制御が必要な場合は、`SemaphoreSlim` など用途に合う同期機構を使用してください。
+| 用途の例 | 選択肢の例 | 検討する点 |
+| --- | --- | --- |
+| カウンターなど単一値の更新 | [`Interlocked.Increment`、`Interlocked.Exchange`](https://learn.microsoft.com/dotnet/api/system.threading.interlocked) | 個々の操作は不可分ですが、複数の操作全体を保護するものではありません |
+| 同期処理の一定範囲の排他 | .NET 9以降の [`System.Threading.Lock.EnterScope()`](https://learn.microsoft.com/dotnet/api/system.threading.lock) と `using` | 取得と解放を同じスレッドで行い、排他区間内で `await` しません |
+| 非同期処理の排他や同時実行数の制限 | [`SemaphoreSlim.WaitAsync` と `Release`](https://learn.microsoft.com/dotnet/api/system.threading.semaphoreslim) | 許可数を用途に合わせ、待機に成功した分を `finally` で解放します |
+| 処理単位でのバッファの借用 | [`MemoryPool<T>.Rent` と `IMemoryOwner<T>`](https://learn.microsoft.com/dotnet/standard/memory-and-spans/memory-t-usage-guidelines) | 利用を終えてから返却し、返却後はバッファにアクセスしません |
+
+借用は資源の所有者と利用期間を管理する方法です。借りた資源を複数の処理で共有する場合は、別途同期を検討してください。
+この規則は `lock` 文の使用箇所を報告し、選んだ方法が処理に適しているかまでは判定しません。
 
 ## リリース情報
 

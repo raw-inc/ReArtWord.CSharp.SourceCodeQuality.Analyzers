@@ -4,12 +4,11 @@ using Microsoft.CodeAnalysis;
 namespace ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests.Diagnostics;
 
 /// <summary>
-/// RAW501の型に応じた案内、診断位置および適用範囲を検証します。
+/// RAW501の用途に応じた方法選択の案内、診断位置および適用範囲を検証します。
 /// </summary>
 public sealed class RAW501LockGuidanceAnalyzerTests
 {
-    private const string ScopedLockMessage = "lock文は禁止です。System.Threading.LockのEnterScope()をusing文で使用してください（例: using (gate.EnterScope())）。";
-    private const string Net9LockMessage = "lock文は禁止です。.NET9以上ではSystem.Threading.Lockの利用を優先し、非同期要件がある場合はSemaphoreSlimなど用途に合う同期機構を使用してください。";
+    private const string ExpectedMessage = "lock文は禁止です。処理の性質や共有資源の扱いに応じて、適切な排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。";
     private const string LockSource = """
         public sealed class Target
         {
@@ -25,7 +24,7 @@ public sealed class RAW501LockGuidanceAnalyzerTests
         """;
 
     /// <summary>
-    /// .NET9以降でLock型のフィールドにEnterScopeの案内を報告します。
+    /// .NET9以降でLock型を使っていても用途に応じた方法の検討を促します。
     /// </summary>
     /// <param name="symbol">対象フレームワークのシンボルです。nullの場合は参照版数で判定します。</param>
     /// <returns>非同期テスト処理です。</returns>
@@ -35,7 +34,7 @@ public sealed class RAW501LockGuidanceAnalyzerTests
     [InlineData("NET10_0")]
     [InlineData("NET10_0_OR_GREATER")]
     [InlineData(null)]
-    public async Task RAW501_Lock型にはEnterScopeを案内する(string? symbol)
+    public async Task RAW501_Lock型にも用途に応じた方法の検討を促す(string? symbol)
     {
         string source = DiagnosticLocationAssert.RemoveMarker(LockSource, out int expectedStart);
         IReadOnlyCollection<Diagnostic> diagnostics = await AnalyzerTestHelper.AnalyzeAsync(
@@ -48,12 +47,12 @@ public sealed class RAW501LockGuidanceAnalyzerTests
         Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
         Assert.Equal(DiagnosticSeverity.Error, diagnostic.Severity);
-        Assert.Equal(ScopedLockMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.Equal(ExpectedMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
         DiagnosticLocationAssert.ContainsAt(diagnostics, "RAW501", source, expectedStart, "lock");
     }
 
     /// <summary>
-    /// 型の別名や式の書き方にかかわらず、Lock型を意味情報から判定します。
+    /// 型の別名や式の書き方によらず、同じ検討を促します。
     /// </summary>
     /// <param name="expression">lock文の対象となる式です。</param>
     /// <returns>非同期テスト処理です。</returns>
@@ -64,7 +63,7 @@ public sealed class RAW501LockGuidanceAnalyzerTests
     [InlineData("localGate")]
     [InlineData("Gate")]
     [InlineData("GetGate()")]
-    public async Task RAW501_Lock型の別名と式にもEnterScopeを案内する(string expression)
+    public async Task RAW501_対象の式によらず同じ検討を促す(string expression)
     {
         string source = $$"""
             using LockAlias = global::System.Threading.Lock;
@@ -95,11 +94,11 @@ public sealed class RAW501LockGuidanceAnalyzerTests
 
         Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
-        Assert.Equal(ScopedLockMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.Equal(ExpectedMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
     }
 
     /// <summary>
-    /// Lock型以外や解決できない式では.NET9以降の一般的な案内を維持します。
+    /// Lock型以外や解決できない式にも、用途に応じた方法の検討を促します。
     /// </summary>
     /// <param name="expression">lock文の対象となる式です。</param>
     /// <returns>非同期テスト処理です。</returns>
@@ -109,7 +108,7 @@ public sealed class RAW501LockGuidanceAnalyzerTests
     [InlineData("monitorGate")]
     [InlineData("new Custom.Lock()")]
     [InlineData("missingGate")]
-    public async Task RAW501_Lock型以外には一般的な案内を維持する(string expression)
+    public async Task RAW501_Lock型以外にも用途に応じた方法の検討を促す(string expression)
     {
         string source = $$"""
             public sealed class Target
@@ -140,15 +139,18 @@ public sealed class RAW501LockGuidanceAnalyzerTests
 
         Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
-        Assert.Equal(Net9LockMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.Equal(ExpectedMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
     }
 
     /// <summary>
-    /// .NET8では従来の同期機構の案内を維持します。
+    /// .NET8でも特定APIへの移行を要求せず、用途に応じた方法の検討を促します。
     /// </summary>
+    /// <param name="symbol">対象フレームワークのシンボルです。</param>
     /// <returns>非同期テスト処理です。</returns>
-    [Fact]
-    public async Task RAW501_NET8では既存の案内を維持する()
+    [Theory]
+    [InlineData("NET8_0")]
+    [InlineData("NET8_0_OR_GREATER")]
+    public async Task RAW501_NET8でも用途に応じた方法の検討を促す(string symbol)
     {
         const string source = """
             public sealed class Target
@@ -169,29 +171,29 @@ public sealed class RAW501LockGuidanceAnalyzerTests
             new ModernSynchronizationAndFieldAnalyzer(),
             "/repo/src/Target.cs",
             "Sample.Application",
-            preprocessorSymbols: ["NET8_0"]).ConfigureAwait(true);
+            preprocessorSymbols: [symbol]).ConfigureAwait(true);
 
         Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
-        Assert.Equal(
-            "lock文は禁止です。.NET8ではSemaphoreSlimなどのモダンな同期機構を使用し、.NET9以上へ移行後はSystem.Threading.Lockを検討してください。",
-            diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.Equal(ExpectedMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
     }
 
     /// <summary>
-    /// EnterScopeをusingで使用するコードには診断を報告しません。
+    /// lock文を含まない処理には診断を報告しません。
     /// </summary>
-    /// <param name="statement">EnterScopeを使用する文です。</param>
+    /// <param name="statement">lock文を含まない処理です。</param>
     /// <returns>非同期テスト処理です。</returns>
     [Theory]
     [InlineData("using (gate.EnterScope()) { }")]
     [InlineData("using var scope = gate.EnterScope();")]
-    public async Task RAW501_EnterScopeのusingには報告しない(string statement)
+    [InlineData("System.Threading.Interlocked.Increment(ref count);")]
+    public async Task RAW501_lock文を含まない処理には報告しない(string statement)
     {
         string source = $$"""
             public sealed class Target
             {
                 private readonly System.Threading.Lock gate = new();
+                private int count;
 
                 public void Run()
                 {
