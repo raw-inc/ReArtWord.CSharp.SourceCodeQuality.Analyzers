@@ -425,7 +425,7 @@ internal static partial class DiagnosticCatalog
     public static readonly DiagnosticDescriptor LockStatementRestrictionRule = new(
         LockStatementRestrictionRuleId,
         "用途に応じた排他制御・借用方法の検討",
-        "lock文を用いずに、処理の性質や共有資源の扱いに合った排他制御・借用方法を採用することを検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
+        "lock文を用いずに、処理の性質や共有資源の扱いに合った排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
         "並行性",
         DiagnosticSeverity.Error,
         isEnabledByDefault: true,
