@@ -16,48 +16,30 @@ internal static class MvvmViewReferenceRuleAnalyzer
     private static readonly string MauiControlsNamespace = string.Concat("Microsoft.Maui", ".Controls");
     private static readonly string AvaloniaNamespace = string.Concat("Ava", "lonia");
 
-    private static readonly string[] ViewNamespaceSegments =
-    [
-        "Views",
-        "Controls",
-        "Pages",
-    ];
-
-    private static readonly string[] ViewTypeSuffixes =
-    [
-        "View",
-        "Window",
-        "Page",
-        "UserControl",
-        "Control",
-        "MessageBox",
-        "ContentPage",
-    ];
-
     /// <summary>
-    /// 識別子名を検証します。
+    /// 型への参照を検証します。
     /// </summary>
     /// <param name="context">構文ノード解析コンテキストです。</param>
-    /// <param name="identifierName">識別子名です。</param>
-    public static void AnalyzeIdentifierName(
+    /// <param name="typeName">参照する型名です。</param>
+    public static void AnalyzeTypeName(
         SyntaxNodeAnalysisContext context,
-        IdentifierNameSyntax identifierName)
+        SimpleNameSyntax typeName)
     {
-        if (!MvvmSyntaxHelper.IsSyntaxTarget(context, identifierName)
+        if (!MvvmSyntaxHelper.IsSyntaxTarget(context, typeName)
             || MvvmSyntaxHelper.GetContainingViewModelSymbol(
-                identifierName,
+                typeName,
                 context.SemanticModel,
                 context.CancellationToken) is null
-            || context.SemanticModel.GetSymbolInfo(identifierName, context.CancellationToken).Symbol is not INamedTypeSymbol typeSymbol
+            || context.SemanticModel.GetSymbolInfo(typeName, context.CancellationToken).Symbol is not INamedTypeSymbol typeSymbol
             || IsApplicationType(typeSymbol)
-            || !IsForbiddenViewType(typeSymbol))
+            || !IsForbiddenViewType(typeSymbol, context.Compilation))
         {
             return;
         }
 
         context.ReportDiagnostic(Diagnostic.Create(
             MvvmDiagnosticCatalog.ViewModelViewReferenceRule,
-            identifierName.GetLocation()));
+            typeName.Identifier.GetLocation()));
     }
 
     /// <summary>
@@ -87,25 +69,38 @@ internal static class MvvmViewReferenceRuleAnalyzer
     }
 
     /// <summary>
-    /// 型が禁止対象View型か判定します。
+    /// UIの基底型と継承関係から、禁止対象の型か判定します。
     /// </summary>
     /// <param name="typeSymbol">型シンボルです。</param>
+    /// <param name="compilation">参照先の型を解決するコンパイルです。</param>
     /// <returns>禁止対象の場合は <see langword="true" /> を返します。</returns>
-    private static bool IsForbiddenViewType(INamedTypeSymbol typeSymbol)
+    private static bool IsForbiddenViewType(INamedTypeSymbol typeSymbol, Compilation compilation)
     {
-        // 状態列挙型は画面の実体ではなく、Page等の接尾辞やControls内の配置だけでは禁止しません。
-        if (typeSymbol.TypeKind == TypeKind.Enum)
+        if (typeSymbol.TypeKind != TypeKind.Class)
         {
             return false;
         }
 
-        string namespaceName = typeSymbol.ContainingNamespace.ToDisplayString();
-        if (HasViewNamespaceSegment(namespaceName))
+        INamedTypeSymbol? messageBox = compilation.GetTypeByMetadataName("System.Windows.MessageBox");
+        if (SymbolEqualityComparer.Default.Equals(typeSymbol, messageBox))
         {
             return true;
         }
 
-        return ViewTypeSuffixes.Any(suffix => typeSymbol.Name.EndsWith(suffix, StringComparison.Ordinal));
+        INamedTypeSymbol? dependencyObject = compilation.GetTypeByMetadataName("System.Windows.DependencyObject");
+        INamedTypeSymbol? mauiElement = compilation.GetTypeByMetadataName("Microsoft.Maui.Controls.Element");
+        INamedTypeSymbol? avaloniaObject = compilation.GetTypeByMetadataName("Avalonia.AvaloniaObject");
+        for (INamedTypeSymbol? current = typeSymbol; current is not null; current = current.BaseType)
+        {
+            if (SymbolEqualityComparer.Default.Equals(current, dependencyObject)
+                || SymbolEqualityComparer.Default.Equals(current, mauiElement)
+                || SymbolEqualityComparer.Default.Equals(current, avaloniaObject))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -124,17 +119,6 @@ internal static class MvvmViewReferenceRuleAnalyzer
         return namespaceName.Equals(SystemWindowsNamespace, StringComparison.Ordinal)
             || namespaceName.Equals(MauiControlsNamespace, StringComparison.Ordinal)
             || namespaceName.Equals(AvaloniaNamespace, StringComparison.Ordinal);
-    }
-
-    /// <summary>
-    /// namespaceがView層セグメントを含むか判定します。
-    /// </summary>
-    /// <param name="namespaceName">namespace名です。</param>
-    /// <returns>含む場合は <see langword="true" /> を返します。</returns>
-    private static bool HasViewNamespaceSegment(string namespaceName)
-    {
-        string[] segments = namespaceName.Split('.');
-        return segments.Any(static segment => ViewNamespaceSegments.Contains(segment, StringComparer.Ordinal));
     }
 
     /// <summary>

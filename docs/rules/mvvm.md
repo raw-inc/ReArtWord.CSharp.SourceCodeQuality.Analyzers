@@ -3,7 +3,7 @@
 [ドキュメント一覧](../README.md) · [導入する](../guides/installation.md) · [検査を設定する](../guides/configuration.md)
 
 CommunityToolkit.Mvvmを使うViewModelの変更通知、コマンド、画面との依存関係を検査します。
-この一覧はv1.0.0の27ルールです。Coreと併用し、MVVMを実装するプロジェクトへ追加してください。
+27種類の規則を提供します。Coreと併用し、MVVMを実装するプロジェクトへ追加してください。
 
 ## 適用範囲
 
@@ -60,7 +60,18 @@ CommunityToolkit.Mvvmを使うViewModelの変更通知、コマンド、画面�
 | RAWMVVM023 | Error | ViewModelからの `Application.Current` 参照を検出 |
 | RAWMVVM024 | Warning | ViewModelクラスにsealedまたはabstractの明示を提案 |
 
-`RAWMVVM022` は列挙型を対象外にしています。`Page` などを含む状態名だけで、画面型への参照とは扱いません。
+`RAWMVVM022` は次のUI基底型とその派生型、および `System.Windows.MessageBox` への参照を検出します。
+独自の画面型も、これらの基底型を間接的に継承していれば対象になります。
+
+| UIフレームワーク | 判定に使用する基底型 |
+| --- | --- |
+| WPF | `System.Windows.DependencyObject` |
+| MAUI | `Microsoft.Maui.Controls.Element` |
+| Avalonia | `Avalonia.AvaloniaObject` |
+
+型名の `View`／`Page` などの接尾辞や、`Views`／`Controls`／`Pages` という名前空間だけでは判定しません。
+`System.Data.DataView`、`System.ComponentModel.ICollectionView`、`System.Windows.Data.CollectionView` などのデータ型や列挙型は対象外です。
+各フレームワークの `Application.Current` は `RAWMVVM023` で検出します。
 
 ## リリース情報
 
