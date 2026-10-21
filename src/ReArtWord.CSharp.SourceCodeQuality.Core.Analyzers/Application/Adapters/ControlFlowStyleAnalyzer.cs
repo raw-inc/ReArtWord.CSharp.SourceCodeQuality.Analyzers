@@ -182,7 +182,9 @@ public sealed class ControlFlowStyleAnalyzer : DiagnosticAnalyzer
                     ifStatement.Statement.GetLocation()));
         }
 
-        if (ifStatement.Else is null || IsBlockStatement(ifStatement.Else.Statement))
+        if (ifStatement.Else is null
+            || IsBlockStatement(ifStatement.Else.Statement)
+            || ifStatement.Else.Statement is IfStatementSyntax)
         {
             AnalyzeElseIfChainSwitchRequirement(context, ifStatement);
             return;

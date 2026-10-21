@@ -94,7 +94,7 @@ C#の設計、コメント、例外処理、書式、非同期処理、命名を
 | RAW431 | Error | テストも含む | 実行ブロック内の連続した空行を検出 |
 | RAW440 | Error | テストも含む | `while (true)` を検出 |
 | RAW441 | Error | テストも含む | for／foreach／whileの本体に波括弧を要求 |
-| RAW442 | Error | テストも含む | if／elseの本体に波括弧を要求 |
+| RAW442 | Error | テストも含む | if／elseの本体に波括弧を要求。else ifは許可し、後続のifの本体を検査 |
 | RAW443 | Error | テストも含む | for文の条件省略、または定数trueの条件を検出 |
 | RAW444 | Error | テストも含む | if／else-if／whileの定数falseの条件を検出 |
 | RAW450 | Error | テストも含む | else-ifが3つ以上続く場合に、switch文またはswitch式を要求 |
