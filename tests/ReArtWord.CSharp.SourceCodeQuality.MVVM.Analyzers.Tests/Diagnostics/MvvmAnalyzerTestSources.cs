@@ -128,12 +128,16 @@ internal static class MvvmAnalyzerTestSources
 
             namespace System.Windows
             {
+                public class DependencyObject
+                {
+                }
+
                 public class Application
                 {
                     public static Application? Current { get; set; }
                 }
 
-                public class Window
+                public class Window : Controls.Control
                 {
                 }
 
@@ -147,27 +151,31 @@ internal static class MvvmAnalyzerTestSources
 
             namespace System.Windows.Controls
             {
-                public class Page
+                public class Page : System.Windows.DependencyObject
                 {
                 }
 
-                public class UserControl
+                public class UserControl : Control
                 {
                 }
 
-                public class Control
+                public class Control : System.Windows.DependencyObject
                 {
                 }
             }
 
             namespace Microsoft.Maui.Controls
             {
-                public class Application
+                public class Element
+                {
+                }
+
+                public class Application : Element
                 {
                     public static Application? Current { get; set; }
                 }
 
-                public class Page
+                public class Page : Element
                 {
                 }
 
@@ -175,14 +183,18 @@ internal static class MvvmAnalyzerTestSources
                 {
                 }
 
-                public class View
+                public class View : Element
                 {
                 }
             }
 
             namespace Avalonia
             {
-                public class Application
+                public class AvaloniaObject
+                {
+                }
+
+                public class Application : AvaloniaObject
                 {
                     public static Application? Current { get; set; }
                 }
@@ -190,15 +202,19 @@ internal static class MvvmAnalyzerTestSources
 
             namespace Avalonia.Controls
             {
-                public class Window
+                public class Control : AvaloniaObject
                 {
                 }
 
-                public class UserControl
+                public class Window : Control
                 {
                 }
 
-                public class Page
+                public class UserControl : Control
+                {
+                }
+
+                public class Page : Control
                 {
                 }
             }

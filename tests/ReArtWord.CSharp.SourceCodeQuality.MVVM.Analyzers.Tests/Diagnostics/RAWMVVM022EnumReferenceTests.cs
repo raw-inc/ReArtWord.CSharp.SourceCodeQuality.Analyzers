@@ -36,7 +36,7 @@ public sealed class RAWMVVM022EnumReferenceTests
     public async Task RAWMVVM022_Pageクラスの検出を維持する()
     {
         string source = MvvmAnalyzerTestSources.WithToolkitStubs("""
-            public sealed class SetupPage { }
+            public sealed class SetupPage : System.Windows.Controls.Page { }
             public sealed class InstallerViewModel : ObservableObject
             {
                 private SetupPage? page;
