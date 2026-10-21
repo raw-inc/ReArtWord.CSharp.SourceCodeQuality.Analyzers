@@ -9,7 +9,7 @@ using ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Contracts.Diagnostics;
 namespace ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers;
 
 /// <summary>
-/// lock文禁止とフィールドprivate必須を検証するAnalyzerです。
+/// lock文の使用箇所とフィールドのアクセス修飾子を検証するAnalyzerです。
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class ModernSynchronizationAndFieldAnalyzer : DiagnosticAnalyzer

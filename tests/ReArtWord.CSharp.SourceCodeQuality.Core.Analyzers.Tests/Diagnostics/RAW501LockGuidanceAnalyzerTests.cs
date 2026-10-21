@@ -8,7 +8,7 @@ namespace ReArtWord.CSharp.SourceCodeQuality.Core.Analyzers.Tests.Diagnostics;
 /// </summary>
 public sealed class RAW501LockGuidanceAnalyzerTests
 {
-    private const string ExpectedMessage = "lock文は禁止です。処理の性質や共有資源の扱いに応じて、適切な排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。";
+    private const string ExpectedMessage = "lock文を用いずに、処理の性質や共有資源の扱いに合った排他制御・借用方法を採用することを検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。";
     private const string LockSource = """
         public sealed class Target
         {
@@ -47,6 +47,7 @@ public sealed class RAW501LockGuidanceAnalyzerTests
         Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
         Assert.Equal(DiagnosticSeverity.Error, diagnostic.Severity);
+        Assert.Equal("用途に応じた排他制御・借用方法の検討", diagnostic.Descriptor.Title.ToString(CultureInfo.InvariantCulture));
         Assert.Equal(ExpectedMessage, diagnostic.GetMessage(CultureInfo.InvariantCulture));
         DiagnosticLocationAssert.ContainsAt(diagnostics, "RAW501", source, expectedStart, "lock");
     }

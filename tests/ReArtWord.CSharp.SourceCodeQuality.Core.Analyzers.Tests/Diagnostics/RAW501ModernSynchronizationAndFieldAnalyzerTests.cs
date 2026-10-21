@@ -66,7 +66,7 @@ public sealed class RAW501ModernSynchronizationAndFieldAnalyzerTests
         Microsoft.CodeAnalysis.Diagnostic diagnostic = Assert.Single(diagnostics);
         Assert.Equal("RAW501", diagnostic.Id);
         Assert.Equal(
-            "lock文は禁止です。処理の性質や共有資源の扱いに応じて、適切な排他制御・借用方法を検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
+            "lock文を用いずに、処理の性質や共有資源の扱いに合った排他制御・借用方法を採用することを検討してください（例: Interlockedによる更新、SemaphoreSlimによる同時実行数の制御など）。",
             diagnostic.GetMessage(CultureInfo.InvariantCulture));
     }
 
